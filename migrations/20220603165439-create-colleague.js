@@ -1,24 +1,37 @@
 'use strict';
 module.exports = {
   async up(queryInterface, DataTypes) {
-    await queryInterface.createTable('UserAuths', {
+    await queryInterface.createTable('Colleagues', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       userID: {
         type:DataTypes.INTEGER,
         allowNull:false,
-        primaryKey:true,
-        unique:true,
         validate:{
           notNull:{msg:'User  must have a id'},
           notEmpty:{msg:'id must not be empty'}
         }
   
       },
-      pass: {
+      colleagueID: {
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        validate:{
+          notNull:{msg:'Colleague  must have a id'},
+          notEmpty:{msg:'id must not be empty'}
+        }
+  
+      },
+      colleagueName: {
         type:DataTypes.STRING,
         allowNull:false,
         validate:{
-          notNull:{msg:'User  must have a pass'},
-          notEmpty:{msg:'Pass must not be empty'}
+          notNull:{msg:'Colleague  must have a Name'},
+          notEmpty:{msg:'Name must not be empty'}
         }
   
       },
@@ -33,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, DataTypes) {
-    await queryInterface.dropTable('UserAuths');
+    await queryInterface.dropTable('Colleagues');
   }
 };

@@ -77,6 +77,39 @@ app.get("/",(req,res)=>{
   }
   });
 
+app.get("/colleague",async(req,res)=>{
+  let users=[];
+  if (req.session.user && req.cookies.user_sid) {
+    const userID=req.session.user.userID;
+    const status=req.session.user.status; 
+    users=await dbFunct.getAllColleagues(userID);
+    console.log(users);
+    res.render("colleague",{userID:userID,status:status,users:users});
+  } else {
+    res.render("colleague",{userID:"",status:false,users:users});
+  }
+});
+
+app.get("/colleague/remove/:colleagueID",async(req,res)=>{
+const colleagueID=req.params.colleagueID;
+const userID=req.session.user.userID;
+await dbFunct.delColleague(userID,colleagueID);
+res.redirect("/colleague");
+});
+
+app.post("/colleague/add",async(req,res)=>{
+const userID=req.session.user.userID;
+const colleagueID=req.body.roll;
+try {
+  const colleagueName=await dbFunct.getUser(colleagueID);
+  console.log(colleagueName);
+await dbFunct.storeColleague(userID,colleagueID,colleagueName.name);
+} catch (error) {
+  console.log(error);
+}
+res.redirect("/colleague");
+});
+
   app.get("/register",sessionLogged,(req,res)=>{
   res.sendFile(__dirname+"/views/register.html");
 });
@@ -87,7 +120,7 @@ const pass=req.body.password;
 const name=req.body.name;
 const userID=req.body.roll;
 const email=req.body.email;
-msg=await dbFunct.storeUser(userID,name,email)
+msg=await dbFunct.storeUser(userID,name,email);
 
 console.log(msg);
 
@@ -95,7 +128,18 @@ bcrypt.hash(pass,10, async(err, hash)=> {
   msg=await dbFunct.storeUserAuth(userID,hash);
   console.log(msg);
 });
-
+await dbFunct.storeColleague(userID,20512200,"Pauline I. Bird");
+await dbFunct.storeColleague(userID,205122002,"Ralph L. Alva");
+await dbFunct.storeColleague(userID,205122003,"John B. Roman");
+await dbFunct.storeColleague(userID,205122004,"David O. Buckley");
+const user=await dbFunct.getUser(userID);
+        
+req.session.user={
+  userID:userID,
+  userName:user.name,
+  userEmail:user.email,
+  status:true
+}
 res.redirect("/");
   });  
   
@@ -151,5 +195,20 @@ res.redirect("/");
     console.log(`Server started on port ${app.get('port')}`);
     await sequelize.authenticate();
     console.log("db connected");
+    const user = await dbFunct.getUser(205122001);
+    if(!user){
+    await dbFunct.storeUser(205122001,"Pauline I. Bird","a@b.com");
+    await dbFunct.storeUser(205122002,"Ralph L. Alva","a@b.com");
+    await dbFunct.storeUser(205122003,"John B. Roman","a@b.com");
+    await dbFunct.storeUser(205122004,"David O. Buckley","a@b.com");
+    
+    bcrypt.hash("123",10, async(err, hash)=> {
+    await dbFunct.storeUserAuth(205122001,hash);
+    await dbFunct.storeUserAuth(205122002,hash);
+    await dbFunct.storeUserAuth(205122003,hash);
+    await dbFunct.storeUserAuth(205122004,hash);
+    });
+    
+    }
     
   });
