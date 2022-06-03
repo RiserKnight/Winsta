@@ -19,10 +19,18 @@
                     class="fa fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto text-uppercase">
+                    <li class="nav-item"><a class="nav-link"><%=userID%></a></li>
                     <li class="nav-item"><a class="nav-link" href="#services">Colleague</a></li>
                     <li class="nav-item"><a class="nav-link" href="#portfolio">Feed</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#team">Register</a></li>
+                    <li class="nav-item">
+                        <%if(status){%>
+                            <a class="nav-link" href="/logout" >Logout</a>    
+                            <%}else{%>
+                            <a class="nav-link" href="/login">Login</a>  
+                            <%}%>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
                     <li class="nav-item"></li>
                 </ul>
             </div>
