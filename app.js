@@ -190,15 +190,12 @@ app.get("/post/delete/:postID",async(req,res)=>{
   });
 
 app.get("/feed",async(req,res)=>{
-  let feeds=[];
+ let feeds=[];
 const userID=req.session.user.userID;
 const status=req.session.user.status;
-const friends = await dbFunct.getAllFriends(userID);
-friends.forEach(async(friend) => {
-  const posts=await dbFunct.getUserPosts(friend.userID);
-  feeds.push(posts);
-});
-
+feeds= await dbFunct.getUserFeed(userID);
+console.log("******************Feeds******************");
+console.log(feeds);
 res.render("feed",{userID:userID,status:status,feeds:feeds})
 });
 

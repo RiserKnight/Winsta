@@ -116,6 +116,30 @@ exports.getUserPosts=async(userID)=>{
         console.log(err);
             }
 }
+
+exports.getUserFeed=async(userID)=>{
+    let a,feeds=[];
+    try{
+     const friends = await module.exports.getAllFriends(userID);
+     console.log("friends: ");
+     console.log(friends);
+     console.log("friends length: ");
+     console.log(friends.length);
+
+    for(a=0;a<friends.length;a++){
+        console.log("friend id: ");
+        console.log(friends[a].userID);
+      const posts=await module.exports.getUserPosts(friends[a].userID);
+        posts.forEach(post => {
+          feeds.push(post);
+        });
+    }
+     return feeds;
+    }
+    catch(err){
+        console.log(err);
+            }
+}
 /**************************** Update Operations *****************************/
 exports.updateUserPost=async(userID,postN)=>{
     try{
