@@ -1,4 +1,4 @@
-const {User,UserAuth,Colleague}=require('./models')
+const {User,UserAuth,Colleague,Post}=require('./models')
 /**************************** Create Operations *****************************/
 
 exports.storeUser=async(userID,name,email)=>{
@@ -28,6 +28,15 @@ exports.storeColleague=async(userID,colleagueID,colleagueName)=>{
         console.log(err);
     }
     return "Colleague Sucessfully stored";
+}
+exports.storePost=async(userID,fileName,caption)=>{
+   
+    try {
+        await Post.create({userID,fileName,caption})
+    } catch (err) {
+        console.log(err);
+    }
+    return "Post Sucessfully stored";
 }
 /**************************** Read Operations *****************************/
 
@@ -71,7 +80,46 @@ exports.getAllColleagues=async(userID)=>{
      demo.forEach(user => {
          users.push(user.dataValues);
      });
-     return users
+     return users;
+    }
+    catch(err){
+        console.log(err);
+            }
+}
+
+exports.getUserPosts=async(userID)=>{
+    let users=[];
+    try{
+     const demo=await Post.findAll({
+        where:{userID:userID}
+    });
+     demo.forEach(user => {
+         users.push(user.dataValues);
+     });
+     return users;
+    }
+    catch(err){
+        console.log(err);
+            }
+}
+/**************************** Update Operations *****************************/
+exports.updateUserPost=async(userID,postN)=>{
+    try{
+        await User.update(
+            {postN: postN},
+            {where:{userID:userID}
+        });
+    }
+    catch(err){
+        console.log(err);
+            }
+}
+exports.updateCaption=async(postID,caption)=>{
+    try{
+        await Post.update(
+            {caption: caption},
+            {where:{id:postID}
+        });
     }
     catch(err){
         console.log(err);
@@ -87,4 +135,14 @@ exports.delColleague=async(userID,colleagueID)=>{
         console.log(err);
     }
     return "Colleague Sucessfully Deleted";
+}
+
+exports.delPost=async(postID)=>{
+   
+    try {
+        await Post.destroy({where:{id:postID}})
+    } catch (err) {
+        console.log(err);
+    }
+    return "Post Sucessfully Deleted";
 }

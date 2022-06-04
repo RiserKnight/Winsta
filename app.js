@@ -6,11 +6,15 @@ const bcrypt = require('bcrypt');
 const dbFunct = require(__dirname+"/database.js");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const path = require('path');
+const multer = require("multer");
+const fs=require("fs");
 
 require('dotenv').config();
 
 const app = express();
 app.use(express.static(__dirname+"/public"));
+app.use(express.static(__dirname+"/uploads"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
@@ -60,7 +64,11 @@ app.set('port', 3000);
 
 let msg="";
 
-
+const folder='./uploads';
+if(!fs.existsSync(folder))
+{
+  fs.mkdirSync(folder);
+}
 
 app.get("/",(req,res)=>{
   console.log(req.session.user);
@@ -110,6 +118,71 @@ await dbFunct.storeColleague(userID,colleagueID,colleagueName.name);
 res.redirect("/colleague");
 });
 
+
+app.get("/post",async(req,res)=>{
+  if (req.session.user && req.cookies.user_sid) {
+    const userID=req.session.user.userID;
+    const status=req.session.user.status; 
+
+    res.render("post",{userID:userID,status:status});
+  } else {
+    res.render("post",{userID:"",status:false});
+  }
+});
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname+req.session.user.userID+"N"+req.session.user.postN+ path.extname(file.originalname));
+  },
+});
+
+var upload = multer({ storage: storage });
+
+var uploadFile = upload.fields([{ name: 'postFile', maxCount: 1 }])
+
+app.post("/uploadPost",uploadFile,async(req,res)=>{
+const userID=req.session.user.userID
+const prevPostN=req.session.user.postN;
+const fileName="/"+req.files.postFile[0].filename;
+await dbFunct.storePost(userID,fileName,req.body.caption)
+const postN=parseInt(prevPostN)+1;
+await dbFunct.updateUserPost(userID,postN);
+req.session.user.postN=postN;
+res.redirect("/mypost");
+});
+
+app.get("/mypost",async(req,res)=>{
+  let posts=[];
+  if (req.session.user && req.cookies.user_sid) {
+    const userID=req.session.user.userID;
+    const status=req.session.user.status; 
+    const posts=await dbFunct.getUserPosts(userID);
+    res.render("myPosts",{userID:userID,status:status,posts:posts});
+  } else {
+    res.render("myPosts",{userID:"",status:false,posts:posts});
+  }
+});
+
+app.get("/post/edit/:postID",async(req,res)=>{
+res.render("editor",{postID:req.params.postID});
+});
+
+app.post("/post/update/:postID",async(req,res)=>{
+const postID=req.params.postID;
+const caption=req.body.caption;
+await dbFunct.updateCaption(postID,caption);
+res.redirect("/mypost");
+});
+
+app.get("/post/delete/:postID",async(req,res)=>{
+  const postID=req.params.postID;
+  await dbFunct.delPost(postID);
+  res.redirect("/mypost");
+  });
+
   app.get("/register",sessionLogged,(req,res)=>{
   res.sendFile(__dirname+"/views/register.html");
 });
@@ -138,7 +211,8 @@ req.session.user={
   userID:userID,
   userName:user.name,
   userEmail:user.email,
-  status:true
+  status:true,
+  postN:1
 }
 res.redirect("/");
   });  
@@ -161,7 +235,8 @@ res.redirect("/");
           userID:userID,
           userName:user.name,
           userEmail:user.email,
-          status:true
+          status:true,
+          postN:user.postN
         }
         res.redirect("/")
       }

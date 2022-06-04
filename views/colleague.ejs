@@ -16,36 +16,7 @@
 </head>
 
 <body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="54">
-    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark" id="mainNav">
-        <div class="container"><a class="navbar-brand" href="#page-top">WebSmith</a><button data-bs-toggle="collapse"
-                data-bs-target="#navbarResponsive" class="navbar-toggler navbar-toggler-right" type="button"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><i
-                    class="fa fa-bars"></i></button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto text-uppercase">
-                    <li class="nav-item"><a class="nav-link" href="/"><%=userID%></a></li>
-                    <%if(status){%>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">Feed</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">My Posts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">Post</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/colleague">Colleague</a></li>
-                    <%}else{%>
-                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                    <%}%>
-                    <li class="nav-item">
-                        <%if(status){%>
-                            <a class="nav-link" href="/logout" >Logout</a>    
-                            <%}else{%>
-                            <a class="nav-link" href="/login">Login</a>  
-                            <%}%>
-                    </li>
-
-                  
-                    <li class="nav-item"></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <%- include('partials/navbar',{userID:userID,status:status}) %>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css">
     <header class="masthead" style="background-image:url(/assetsHome/img/header-bg.jpg);">
         <div class="container">
