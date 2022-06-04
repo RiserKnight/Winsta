@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feeds</title>
+    <link rel="stylesheet" href="/assetsHome/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kaushan+Script&amp;display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/stylesMyPost.css">
+</head>
+<body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="54">
+    <%- include('partials/navbar',{userID:userID,status:status}) %>
+    <header class="masthead" style="background-image:url(/assetsHome/img/header-bg.jpg);">
+        <div class="intro-text" style="padding-bottom: 0;">
+        </div>
+        <div class="container mt-4 mb-5">
+            <div class="d-flex justify-content-center row">
+
+                
+                <div class="col-md-8">
+                    <div class="feed p-2">
+    
+                        <%feeds.forEach((post)=>{%>
+                        <div class="bg-white border mt-2" style="margin-bottom: 5%;">
+
+                            <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
+                               
+                                    <div class="d-flex flex-column flex-wrap ml-2" style="color: rgb(33, 37, 41); font-size: x-large;"><span class="font-weight-bold">
+                                        <%=post.name%>
+                                    </span></div>
+                               
+                            </div>
+                            <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive"
+                                    src="<%=post.fileName%>"></div>
+                                    <div class="d-flex flex-column flex-wrap ml-2" style="color: rgb(33, 37, 41); font-size: large;"><span class="font-weight-bold">
+                                        <%=post.caption%>
+                                    </span></div>
+                        
+                        </div>
+                        <%});%>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+    </header>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assetsHome/js/script.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -144,10 +144,16 @@ var upload = multer({ storage: storage });
 var uploadFile = upload.fields([{ name: 'postFile', maxCount: 1 }])
 
 app.post("/uploadPost",uploadFile,async(req,res)=>{
-const userID=req.session.user.userID
+const userID=req.session.user.userID;
+const userName=req.session.user.userName;
+const caption=req.body.caption;
+console.log("id: "+userID);
+console.log("name: "+userName);
 const prevPostN=req.session.user.postN;
 const fileName="/"+req.files.postFile[0].filename;
-await dbFunct.storePost(userID,fileName,req.body.caption)
+console.log("fileName: "+fileName);
+console.log("caption: "+caption);
+await dbFunct.storePost(userID,userName,fileName,caption);
 const postN=parseInt(prevPostN)+1;
 await dbFunct.updateUserPost(userID,postN);
 req.session.user.postN=postN;
@@ -182,6 +188,19 @@ app.get("/post/delete/:postID",async(req,res)=>{
   await dbFunct.delPost(postID);
   res.redirect("/mypost");
   });
+
+app.get("/feed",async(req,res)=>{
+  let feeds=[];
+const userID=req.session.user.userID;
+const status=req.session.user.status;
+const friends = await dbFunct.getAllFriends(userID);
+friends.forEach(async(friend) => {
+  const posts=await dbFunct.getUserPosts(friend.userID);
+  feeds.push(posts);
+});
+
+res.render("feed",{userID:userID,status:status,feeds:feeds})
+});
 
   app.get("/register",sessionLogged,(req,res)=>{
   res.sendFile(__dirname+"/views/register.html");

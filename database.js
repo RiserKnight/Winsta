@@ -29,10 +29,10 @@ exports.storeColleague=async(userID,colleagueID,colleagueName)=>{
     }
     return "Colleague Sucessfully stored";
 }
-exports.storePost=async(userID,fileName,caption)=>{
+exports.storePost=async(userID,name,fileName,caption)=>{
    
     try {
-        await Post.create({userID,fileName,caption})
+        await Post.create({userID,name,fileName,caption})
     } catch (err) {
         console.log(err);
     }
@@ -86,7 +86,21 @@ exports.getAllColleagues=async(userID)=>{
         console.log(err);
             }
 }
-
+exports.getAllFriends=async(userID)=>{
+    let users=[];
+    try{
+     const demo=await Colleague.findAll({
+        where:{colleagueID:userID}
+    });
+     demo.forEach(user => {
+         users.push(user.dataValues);
+     });
+     return users;
+    }
+    catch(err){
+        console.log(err);
+            }
+}
 exports.getUserPosts=async(userID)=>{
     let users=[];
     try{
