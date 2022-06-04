@@ -15,6 +15,5 @@ SECRET=somesecrettext
 where DB_PASS will be passoword of postgresSQL
 and SECRET is secret key to store cookies
 
-Iin Post upload section upload file will work fine although it will not show at front-end.
 
 
